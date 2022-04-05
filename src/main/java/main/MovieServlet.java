@@ -50,5 +50,22 @@ public class MovieServlet extends HttpServlet {
             e.printStackTrace();
         }
     }
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
+        response.setContentType("application/json");
+        int targetId = 0;
+        try {
+            try {
+                String [] uriParts = request.getRequestURI().split("/");
+                targetId = Integer.parseInt(uriParts[uriParts.length - 1]);
+            } catch (Exception e) {}
+            int finalTargetId = targetId;
+            movies.removeIf(movie -> movie.getId() == finalTargetId);
+            PrintWriter out = response.getWriter();
+            out.println("Movie deleted");
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
 
 }
