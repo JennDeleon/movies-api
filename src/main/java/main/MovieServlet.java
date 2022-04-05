@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+//localhost:8080/movies/*
+
 @WebServlet(name = "MovieServlet", urlPatterns = "/movies/*")
 public class MovieServlet extends HttpServlet {
 
@@ -28,16 +30,33 @@ public class MovieServlet extends HttpServlet {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        BufferedReader bReader = req.getReader();
+        Movie updatedMovie = new Gson().fromJson(bReader, Movie.class);
+        resp.setContentType("application/json");
+        String[] uriParts = req.getRequestURI().split("/");
 
+        int targetId = Integer.parseInt(uriParts[uriParts.length - 1]);
+
+        for (Movie movie : movies) {
+            if (movie.getId() == targetId) {
+                int index = movies.indexOf(movie);
+                movies.set(index, updatedMovie);
+                PrintWriter out = resp.getWriter();
+                out.println("Movie updated");
+            }
+        }
     }
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
 
-        BufferedReader br = request.getReader();
+        BufferedReader bReader = request.getReader();
 
-        Movie[] newMovies = new Gson().fromJson(br, Movie[].class);
+        Movie[] newMovies = new Gson().fromJson(bReader, Movie[].class);
         for (Movie movie : newMovies) {
             movie.setId(nextId++);
             movies.add(movie);
