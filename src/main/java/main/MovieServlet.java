@@ -2,7 +2,6 @@ package main;
 
 import com.google.gson.Gson;
 import data.Movie;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -12,17 +11,25 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-//localhost:8080/movies/*
+//  localhost:8080/movies/*
 
 @WebServlet(name = "MovieServlet", urlPatterns = "/movies/*")
 public class MovieServlet extends HttpServlet {
+                Movie GetOut = new Movie("Get Out",
+                        7.7,
+                        "poster",
+                        2017,
+                        "Horror/Thriller ",
+                        "Jordan Peele",
+                        "Now that Chris and his girlfriend, Rose, have reached the meet-the-parents milestone of dating, she invites him for a weekend getaway upstate with her parents, Missy and Dean.",
+                        " Daniel Kaluuya, Allison Williams, Bradley Whitford", 1);
 
     ArrayList<Movie> movies = new ArrayList<>();
     int nextId = 1;
+
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType("application/json");
-
         try {
             PrintWriter out = response.getWriter();
             String movieString = new Gson().toJson(movies.toArray());
@@ -31,6 +38,25 @@ public class MovieServlet extends HttpServlet {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json");
+        BufferedReader bReader = request.getReader();
+        Movie[] newMovies = new Gson().fromJson(bReader, Movie[].class);
+
+        for (Movie movie : newMovies) {
+            movie.setId(nextId++);
+            movies.add(movie);
+        }
+        try {
+            PrintWriter out = response.getWriter();
+            out.println("Movie(s) added");
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         BufferedReader bReader = req.getReader();
@@ -51,27 +77,9 @@ public class MovieServlet extends HttpServlet {
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json");
-
-        BufferedReader bReader = request.getReader();
-
-        Movie[] newMovies = new Gson().fromJson(bReader, Movie[].class);
-        for (Movie movie : newMovies) {
-            movie.setId(nextId++);
-            movies.add(movie);
-        }
-
-        try {
-            PrintWriter out = response.getWriter();
-            out.println("Movie(s) added");
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-    }
-    @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType("application/json");
+
         int targetId = 0;
         try {
             try {
