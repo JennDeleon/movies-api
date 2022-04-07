@@ -11,7 +11,6 @@ public class SearchServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         String term = request.getParameter("term");
-
         PrintWriter out = response.getWriter();
         out.println("<h1> You searched for: " + term + "</h1>");
     }
