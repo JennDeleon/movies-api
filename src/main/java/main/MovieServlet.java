@@ -15,14 +15,14 @@ import java.util.ArrayList;
 
 @WebServlet(name = "MovieServlet", urlPatterns = "/movies/*")
 public class MovieServlet extends HttpServlet {
-                Movie GetOut = new Movie("Get Out",
-                        7.7,
-                        "poster",
-                        2017,
-                        "Horror/Thriller ",
-                        "Jordan Peele",
-                        "Now that Chris and his girlfriend, Rose, have reached the meet-the-parents milestone of dating, she invites him for a weekend getaway upstate with her parents, Missy and Dean.",
-                        " Daniel Kaluuya, Allison Williams, Bradley Whitford", 1);
+//                Movie GetOut = new Movie("Get Out",
+//                        7.7,
+//                        "poster",
+//                        2017,
+//                        "Horror/Thriller ",
+//                        "Jordan Peele",
+//                        "Now that Chris and his girlfriend, Rose, have reached the meet-the-parents milestone of dating, she invites him for a weekend getaway upstate with her parents, Missy and Dean.",
+//                        " Daniel Kaluuya, Allison Williams, Bradley Whitford", 1);
 
     ArrayList<Movie> movies = new ArrayList<>();
     int nextId = 1;
