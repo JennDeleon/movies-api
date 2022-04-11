@@ -3,6 +3,8 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.WebServlet;
 
+//   http://localhost:8080/search
+
 @WebServlet(name = "SearchServlet", urlPatterns = "/search")
 public class SearchServlet extends HttpServlet {
 

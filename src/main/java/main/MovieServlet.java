@@ -9,7 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+
+import data.MoviesDao;
+import data.DaoFactory;
 
 //  localhost:8080/movies/*
 
@@ -27,17 +32,26 @@ public class MovieServlet extends HttpServlet {
     ArrayList<Movie> movies = new ArrayList<>();
     int nextId = 1;
 
+     MoviesDao moviesDao;
+
+     public MovieServlet(){
+         this.moviesDao = DaoFactory.getMoviesDao(DaoFactory.DaoType.IN_MEMORY);
+     }
+
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType("application/json");
         try {
             PrintWriter out = response.getWriter();
-            String movieString = new Gson().toJson(movies.toArray());
-            out.println(movieString);
-        } catch (IOException e) {
+            List<Movie> moviesArray = moviesDao.all();
+            Gson gson = new Gson();
+            String json = gson.toJson(moviesArray);
+            out.println(json);
+        } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -55,6 +69,7 @@ public class MovieServlet extends HttpServlet {
         } catch(IOException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
@@ -94,5 +109,6 @@ public class MovieServlet extends HttpServlet {
             System.out.println(e);
         }
     }
+
 
 }
