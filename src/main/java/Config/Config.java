@@ -3,7 +3,7 @@ package Config;
 public class Config {
 
     public String getUrl(){
-        return "jdbc:mysql://localhost:3306/movies_db?serverTimezone=UTC&useSSL=false";
+        return "jdbc:mysql://emp.fulgentcorp.com:3306/jennifer?allowPublicKeyRetrieval=true&useSSL=false";
     }
 
     public String getUser(){
