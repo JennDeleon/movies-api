@@ -5,7 +5,7 @@ public class Movie {
     private String title;
     private Double rating;
     private String poster;
-    private int year;
+    private Integer year;
     private String genre;
     private String director;
     private String plot;
@@ -55,7 +55,7 @@ public class Movie {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
