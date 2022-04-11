@@ -11,7 +11,7 @@ public interface MoviesDao {
 
     Movie findOne(int id) throws SQLException;
 
-    void insert(Movie movie);
+    void insert(Movie movie) throws SQLException;
 
     void insertAll(Movie[] movies) throws SQLException;
 

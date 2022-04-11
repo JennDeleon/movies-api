@@ -3,7 +3,6 @@ package DAO;
 import Config.Config;
 import com.mysql.cj.jdbc.Driver;
 import data.Movie;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,104 +28,116 @@ public class MySqlMoviesDao implements MoviesDao {
         }
     }
 
-    @Override
     public List<Movie> all() throws SQLException {
-
+        ArrayList<Movie> movies = new ArrayList<>();
         Statement statement = connection.createStatement();
-        String sql = "SELECT * FROM movies";
-        ResultSet rs = statement.executeQuery(sql);
-
-        List<Movie> movies = new ArrayList<>();
-        while (rs.next()) {
-            Movie m = new Movie();
-            m.setId(rs.getInt("id"));
-            m.setTitle(rs.getString("title"));
-            m.setYear(rs.getInt("year"));
-            m.setGenre(rs.getString("genre"));
-            m.setRating(rs.getDouble("rating"));
-            m.setDirector(rs.getString("director"));
-            movies.add(m);
+        ResultSet movieList = statement.executeQuery("select * from jennifer.movies");
+        while (movieList.next()){
+            movies.add(new Movie(
+                    movieList.getString("title"),
+                    movieList.getDouble("rating"),
+                    movieList.getString("poster"),
+                    movieList.getInt("year"),
+                    movieList.getString("genre"),
+                    movieList.getString("director"),
+                    movieList.getString("plot"),
+                    movieList.getString("actors"),
+                    movieList.getInt("id")
+            ));
         }
+        movieList.close();
+        statement.close();
         return movies;
     }
 
     @Override
-    public Movie findOne(int id) throws SQLException {
-        // TODO: Get one movie by id
-        String sql = "SELECT * FROM jennifer.movies WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setInt(1, id);
-        ResultSet rs = statement.executeQuery();
-        return null;
+    public Movie findOne(int id) {
+        Movie movie = new Movie();
+        try {
+            PreparedStatement ps = connection.prepareStatement("Select * from movies where id = ?");
+            ResultSet rs = ps.executeQuery();
+            ps.setInt(1, id);
+            rs.next();
 
+            movie.setTitle(rs.getString("title"));
+            movie.setYear(rs.getInt("year"));
+            movie.setGenre(rs.getString("genre"));
+            movie.setRating(rs.getDouble("rating"));
+            movie.setDirector(rs.getString("director"));
+            movie.setActors(rs.getString("actors"));
+            movie.setPlot(rs.getString("plot"));
+            movie.setPoster(rs.getString("poster"));
+
+            rs.close();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return movie;
+    }
+
+
+    public void insert(Movie movie) throws SQLException {
+        // TODO: Insert one movie
+        PreparedStatement pStatement = connection.prepareStatement("insert into jennifer.movies " +
+                " (title, year, genre, director, actors, rating, poster, plot) " +
+                " values (?, ?, ?, ?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
+        pStatement.setString(1, movie.getTitle());
+        pStatement.setInt(2, movie.getYear());
+        pStatement.setString(3, movie.getGenre());
+        pStatement.setString(4, movie.getDirector());
+        pStatement.setString(5, movie.getActors());
+        pStatement.setDouble(6, movie.getRating());
+        pStatement.setString(7, movie.getPoster());
+        pStatement.setString(8, movie.getPlot());
+        pStatement.executeUpdate();
+        pStatement.close();
     }
 
 
     @Override
-    public void insert(Movie movie) {
-        // TODO: Insert one movie
-    }
-
-
     public void insertAll(Movie[] movies) throws SQLException {
-
-        // Build sql template
-        StringBuilder sql = new StringBuilder("INSERT INTO movies (" +
-                "id, title, year, director, actors, imdbId, poster, genre, plot) " +
-                "VALUES ");
-
-
-        // Add a interpolation template for each element in movies list
-        sql.append("(?, ?, ?, ?, ?, ?, ?, ?, ?), ".repeat(movies.length));
-
-        // Create a new String and take off the last comma and whitespace
-        sql = new StringBuilder(sql.substring(0, sql.length() - 2));
-
-        // Use the sql string to create a prepared statement
-        PreparedStatement statement = connection.prepareStatement(sql.toString());
-
-        // Add each movie to the prepared statement using the index of each sql param: '?'
-        // This is done by using a counter
-        // You could use a for loop to do this as well and use its incrementor
-        int counter = 0;
-        for (Movie movie : movies) {
-            statement.setInt((counter * 9) + 1, movie.getId());
-            statement.setString((counter * 9) + 2, movie.getTitle());
-            statement.setInt((counter * 9) + 3, movie.getYear());
-            statement.setString((counter * 9) + 4, movie.getDirector());
-            statement.setString((counter * 9) + 5, movie.getActors());
-            statement.setDouble((counter * 9) + 6, movie.getRating());
-            statement.setString((counter * 9) + 7, movie.getPoster());
-            statement.setString((counter * 9) + 8, movie.getGenre());
-            statement.setString((counter * 9) + 9, movie.getPlot());
-            counter++;
+        for (Movie m : movies) {
+            insert(m);
         }
-        statement.executeUpdate();
     }
 
 
     @Override
     public void update(Movie movie) throws SQLException {
-        //TODO: Update a movie here!
+        int currentIndex = 1;
+        String qString = "Update movies set";
+        if (movie.getTitle() != null) {
+            qString += " title = ?,";
+        }
+        if (movie.getRating() != null) {
+            qString += " rating = ?,";
+        }
+        qString = qString.substring(0,qString.length() - 1);
+        qString += " where id = ?";
+        PreparedStatement updateStmt = connection.prepareStatement(qString, Statement.RETURN_GENERATED_KEYS);
+        if (movie.getTitle() != null) {
+            updateStmt.setString(currentIndex, movie.getTitle());
+            currentIndex++;
+        }
+        if (movie.getRating() != null) {
+            updateStmt.setDouble(currentIndex, movie.getRating());
+            currentIndex++;
+        }
+        updateStmt.setInt(currentIndex,movie.getId());
+        updateStmt.executeUpdate();
+
+        updateStmt.close();
     }
 
     @Override
     public void delete(int id) throws SQLException {
-        //TODO: Annihilate a movie
+        PreparedStatement deleteStmt = connection.prepareStatement("Delete from movies where id = " + id);
+        deleteStmt.execute();
+
+        deleteStmt.close();
     }
-    @Override
-    public void destroy(int id) throws SQLException {
 
-        String sql =
-                "DELETE FROM movies " +
-                        "WHERE id = ?";
-
-        PreparedStatement statement = connection.prepareStatement(sql);
-
-        statement.setInt(1, id);
-
-        statement.execute();
-    }
 
 }
 
