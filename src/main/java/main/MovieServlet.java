@@ -3,7 +3,6 @@ package main;
 import DAO.DaoFactory;
 import com.google.gson.Gson;
 import data.Movie;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,8 +22,8 @@ public class MovieServlet extends HttpServlet {
         try{
             out.println(new Gson().toJson(
                     DaoFactory.getMoviesDao(DaoFactory.ImplType.IN_MEMORY)
-                            .all()));
-        }catch(SQLException e){
+                    .all()));
+        } catch(SQLException e){
             e.printStackTrace();
         }
     }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 public class MySqlMoviesDao implements MoviesDao {
 
     public Connection connection = null;
