@@ -11,7 +11,7 @@ public class MoviesDaoFactory {
 
     ; //Notice we have two values here
 
-    public static MoviesDao getMoviesDao(DaoFactory.ImplType daoType) {
+    public static MoviesDao getMoviesDao(DAOType daoType) {
 
         switch (daoType) {
             case IN_MEMORY: { //yet we have one switch case. We'll get to that!

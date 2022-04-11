@@ -1,6 +1,8 @@
 package main;
 
 import DAO.DaoFactory;
+import DAO.MoviesDao;
+import DAO.MoviesDaoFactory;
 import com.google.gson.Gson;
 import data.Movie;
 import javax.servlet.annotation.WebServlet;
@@ -15,13 +17,14 @@ import static java.lang.System.out;
 
 @WebServlet(name = "MovieServlet", urlPatterns = "/movies/*")
 public class MovieServlet extends HttpServlet {
-
+private MoviesDao dao = MoviesDaoFactory.getMoviesDao(MoviesDaoFactory.DAOType.MYSQL);
     @Override
     protected void
     doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
         try{
+            PrintWriter out = response.getWriter();
             out.println(new Gson().toJson(
-                    DaoFactory.getMoviesDao(DaoFactory.ImplType.IN_MEMORY)
+                    dao
                     .all()));
         } catch(SQLException e){
             e.printStackTrace();
@@ -45,7 +48,7 @@ public class MovieServlet extends HttpServlet {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         try {
-            DaoFactory.getMoviesDao(DaoFactory.ImplType.IN_MEMORY).insert(movies[0]);
+           dao.insertAll(movies);
         } catch (Exception e) {
             out.println(new Gson().toJson(e.getLocalizedMessage()));
             response.setStatus(500);
@@ -58,9 +61,12 @@ public class MovieServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        String [] uriParts = request.getRequestURI().split("/");
+        int targetId = Integer.parseInt(uriParts[uriParts.length - 1]);
         try {
             Movie movie = new Gson().fromJson(request.getReader(), Movie.class);
-            DaoFactory.getMoviesDao(DaoFactory.ImplType.IN_MEMORY).update(movie);
+            movie.setId(targetId);
+            dao.update(movie);
         } catch (SQLException e) {
             out.println(new Gson().toJson(e.getLocalizedMessage()));
             response.setStatus(500);
@@ -79,9 +85,10 @@ public class MovieServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        String [] uriParts = request.getRequestURI().split("/");
+        int targetId = Integer.parseInt(uriParts[uriParts.length - 1]);
         try {
-            int id = new Gson().fromJson(request.getReader(), int.class);
-            DaoFactory.getMoviesDao(DaoFactory.ImplType.IN_MEMORY).delete(id);
+            dao.delete(targetId);
         } catch (SQLException e) {
             out.println(new Gson().toJson(e.getLocalizedMessage()));
             response.setStatus(500);

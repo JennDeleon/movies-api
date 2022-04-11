@@ -7,8 +7,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 public class MySqlMoviesDao implements MoviesDao {
 
     public Connection connection = null;
@@ -107,7 +105,7 @@ public class MySqlMoviesDao implements MoviesDao {
     @Override
     public void update(Movie movie) throws SQLException {
         int currentIndex = 1;
-        String qString = "Update movies set";
+        String qString = "Update movies set"; /*Do I need a WHERE?*/
         if (movie.getTitle() != null) {
             qString += " title = ?,";
         }
@@ -127,7 +125,6 @@ public class MySqlMoviesDao implements MoviesDao {
         }
         updateStmt.setInt(currentIndex,movie.getId());
         updateStmt.executeUpdate();
-
         updateStmt.close();
     }
 
@@ -135,10 +132,7 @@ public class MySqlMoviesDao implements MoviesDao {
     public void delete(int id) throws SQLException {
         PreparedStatement deleteStmt = connection.prepareStatement("Delete from movies where id = " + id);
         deleteStmt.execute();
-
         deleteStmt.close();
     }
-
-
 }
 
