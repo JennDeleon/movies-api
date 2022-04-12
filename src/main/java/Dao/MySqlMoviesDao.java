@@ -118,18 +118,18 @@ public class MySqlMoviesDao implements MoviesDao {
 //        if (movie.getYear() != null) {
 //            qString += " year = ?,";
 //        }
-//        if (movie.getActors() != null) {
-//            qString += " actors = ?,";
-//        }
-//        if (movie.getActors() != null) {
-//            qString += " actors = ?,";
-//        }
-//        if (movie.getActors() != null) {
-//            qString += " actors = ?,";
-//        }
-//        if (movie.getActors() != null) {
-//            qString += " actors = ?,";
-//        }
+        if (movie.getGenre() != null) {
+            qString += " genre = ?,";
+        }
+        if (movie.getDirector() != null) {
+            qString += " director = ?,";
+        }
+        if (movie.getPlot() != null) {
+            qString += " plot = ?,";
+        }
+        if (movie.getActors() != null) {
+            qString += " actors = ?,";
+        }
         qString = qString.substring(0,qString.length() - 1);
         qString += " where id = ?";
         PreparedStatement updateStmt = connection.prepareStatement(qString, Statement.RETURN_GENERATED_KEYS);
@@ -149,6 +149,22 @@ public class MySqlMoviesDao implements MoviesDao {
 //            updateStmt.setString(currentIndex, movie.getYear());
 //            currentIndex++;
 //        }
+        if (movie.getGenre() != null) {
+            updateStmt.setString(currentIndex, movie.getGenre());
+            currentIndex++;
+        }
+                if (movie.getDirector() != null) {
+            updateStmt.setString(currentIndex, movie.getDirector());
+            currentIndex++;
+        }
+                if (movie.getPlot() != null) {
+            updateStmt.setString(currentIndex, movie.getPlot());
+            currentIndex++;
+        }
+        if (movie.getActors() != null) {
+            updateStmt.setString(currentIndex, movie.getActors());
+            currentIndex++;
+        }
         updateStmt.setInt(currentIndex,movie.getId());
         updateStmt.executeUpdate();
         updateStmt.close();

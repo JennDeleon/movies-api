@@ -1,6 +1,5 @@
 package main;
 
-import DAO.DaoFactory;
 import DAO.MoviesDao;
 import DAO.MoviesDaoFactory;
 import com.google.gson.Gson;
