@@ -3,6 +3,7 @@ package DAO;
 import Config.Config;
 import com.mysql.cj.jdbc.Driver;
 import data.Movie;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class MySqlMoviesDao implements MoviesDao {
         ArrayList<Movie> movies = new ArrayList<>();
         Statement statement = connection.createStatement();
         ResultSet movieList = statement.executeQuery("select * from jennifer.movies");
-        while (movieList.next()){
+        while (movieList.next()) {
             movies.add(new Movie(
                     movieList.getString("title"),
                     movieList.getDouble("rating"),
@@ -130,7 +131,7 @@ public class MySqlMoviesDao implements MoviesDao {
         if (movie.getActors() != null) {
             qString += " actors = ?,";
         }
-        qString = qString.substring(0,qString.length() - 1);
+        qString = qString.substring(0, qString.length() - 1);
         qString += " where id = ?";
         PreparedStatement updateStmt = connection.prepareStatement(qString, Statement.RETURN_GENERATED_KEYS);
         if (movie.getTitle() != null) {
@@ -153,11 +154,11 @@ public class MySqlMoviesDao implements MoviesDao {
             updateStmt.setString(currentIndex, movie.getGenre());
             currentIndex++;
         }
-                if (movie.getDirector() != null) {
+        if (movie.getDirector() != null) {
             updateStmt.setString(currentIndex, movie.getDirector());
             currentIndex++;
         }
-                if (movie.getPlot() != null) {
+        if (movie.getPlot() != null) {
             updateStmt.setString(currentIndex, movie.getPlot());
             currentIndex++;
         }
@@ -165,7 +166,7 @@ public class MySqlMoviesDao implements MoviesDao {
             updateStmt.setString(currentIndex, movie.getActors());
             currentIndex++;
         }
-        updateStmt.setInt(currentIndex,movie.getId());
+        updateStmt.setInt(currentIndex, movie.getId());
         updateStmt.executeUpdate();
         updateStmt.close();
     }
