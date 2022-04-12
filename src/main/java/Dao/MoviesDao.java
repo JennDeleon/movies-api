@@ -19,4 +19,3 @@ public interface MoviesDao {
 
     void delete(int id) throws SQLException;
 }
-
