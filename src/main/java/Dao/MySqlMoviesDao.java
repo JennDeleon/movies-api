@@ -112,6 +112,24 @@ public class MySqlMoviesDao implements MoviesDao {
         if (movie.getRating() != null) {
             qString += " rating = ?,";
         }
+        if (movie.getPoster() != null) {
+            qString += " poster = ?,";
+        }
+//        if (movie.getYear() != null) {
+//            qString += " year = ?,";
+//        }
+//        if (movie.getActors() != null) {
+//            qString += " actors = ?,";
+//        }
+//        if (movie.getActors() != null) {
+//            qString += " actors = ?,";
+//        }
+//        if (movie.getActors() != null) {
+//            qString += " actors = ?,";
+//        }
+//        if (movie.getActors() != null) {
+//            qString += " actors = ?,";
+//        }
         qString = qString.substring(0,qString.length() - 1);
         qString += " where id = ?";
         PreparedStatement updateStmt = connection.prepareStatement(qString, Statement.RETURN_GENERATED_KEYS);
@@ -123,6 +141,14 @@ public class MySqlMoviesDao implements MoviesDao {
             updateStmt.setDouble(currentIndex, movie.getRating());
             currentIndex++;
         }
+        if (movie.getPoster() != null) {
+            updateStmt.setString(currentIndex, movie.getPoster());
+            currentIndex++;
+        }
+//        if (movie.getYear() != null) {
+//            updateStmt.setString(currentIndex, movie.getYear());
+//            currentIndex++;
+//        }
         updateStmt.setInt(currentIndex,movie.getId());
         updateStmt.executeUpdate();
         updateStmt.close();

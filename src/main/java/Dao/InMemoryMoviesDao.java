@@ -28,8 +28,6 @@ public class InMemoryMoviesDao implements MoviesDao {
         return moviesMap != null ? moviesMap.get(id) : null;
     }
 
-
-
     @Override
     public void insert(Movie movie) {
         int newId = moviesMap.keySet().size() + 1;
